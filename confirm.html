@@ -25,12 +25,19 @@
 <script>
 const btn=document.getElementById('confirmBtn'),msg=document.getElementById('msg'),login=document.getElementById('loginLink');
 const params=new URLSearchParams(location.search),tokenHash=params.get('token_hash'),type=params.get('type')||'email';
-const client=window.supabase.createClient(window.RJ_SUPABASE_URL,window.RJ_SUPABASE_KEY);
-if(!tokenHash){btn.disabled=true;msg.textContent='This confirmation link is invalid or incomplete.';msg.className='msg bad'}
-btn.onclick=async()=>{if(!tokenHash)return;btn.disabled=true;btn.textContent='CONFIRMING...';msg.textContent='Please wait while we verify your email.';msg.className='msg';
-const {error}=await client.auth.verifyOtp({token_hash:tokenHash,type:type});
-if(error){msg.textContent='This confirmation link is invalid or has expired. Please request a new confirmation email.';msg.className='msg bad';btn.textContent='LINK EXPIRED';return}
-msg.textContent='Email confirmed successfully! Your host account is ready.';msg.className='msg ok';btn.textContent='EMAIL CONFIRMED ✓';login.style.display='inline-block';
-setTimeout(()=>location.href='/?host=login',1800)};
+const client=window.supabase.createClient(window.RJ_SUPABASE_URL,window.RJ_SUPABASE_KEY,{auth:{detectSessionInUrl:true,persistSession:true}});
+btn.onclick=async()=>{
+  btn.disabled=true;btn.textContent='CONFIRMING...';msg.textContent='Please wait while we confirm your email.';msg.className='msg';
+  let error=null;
+  if(tokenHash){({error}=await client.auth.verifyOtp({token_hash:tokenHash,type}))}
+  else{
+    await new Promise(r=>setTimeout(r,500));
+    const result=await client.auth.getUser();
+    error=result.error;
+  }
+  if(error){msg.textContent='This confirmation link is invalid or has expired. Please open the newest email from RJ Club.';msg.className='msg bad';btn.textContent='TRY NEW LINK';btn.disabled=false;return}
+  msg.textContent='Email confirmed successfully! Your host account is ready.';msg.className='msg ok';btn.textContent='EMAIL CONFIRMED ✓';login.style.display='inline-block';
+  setTimeout(()=>location.href='/?host=login',1500);
+};
 </script>
 </body></html>
