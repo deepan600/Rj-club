@@ -14,20 +14,24 @@ body{background:#f4f7fa}.shell{max-width:1536px;padding:0}.top{height:72px;paddi
 #home{max-width:none;margin:0;min-height:calc(100vh - 72px);border:0;border-radius:0;color:#fff;padding:72px 7%;background:radial-gradient(circle at 70% 40%,#5a1b10 0,#17111a 25%,#06111c 70%);box-shadow:none}
 #home h1{font-size:62px;line-height:.9;max-width:430px;margin:0 0 20px;text-transform:uppercase}#home h1:before{content:"QUIZ\A";white-space:pre}#home .muted{color:#d3d8df;font-size:17px}#home .field{max-width:480px;background:#ffffff10;border-color:#ffffff35;color:#fff}#home option{color:#111}#joinBtn{max-width:480px}
 .auth{margin:6vh auto;border-radius:14px;padding:36px}.auth h1{font-size:30px}.field{min-height:48px}
-#dashboard,#editor,#control{padding:32px 34px 50px 250px;min-height:calc(100vh - 72px);position:relative;background:#f7f9fb}
-#dashboard:before,#editor:before,#control:before{content:"RJ Club\A\A▣  Dashboard\A\A✎  Create New Quiz\A\A▤  My Quizzes\A\A♙  Profile\A\A↪  Logout";white-space:pre;position:absolute;left:0;top:0;width:215px;height:100%;padding:30px 20px;background:#07131d;color:#fff;font-weight:700;line-height:2.15}
-#quizGrid{grid-template-columns:repeat(3,1fr)}.quizcard{min-height:155px;border-radius:10px}.quizcard:before{content:"◉";display:grid;place-items:center;width:45px;height:45px;border-radius:9px;background:#167dff;color:#fff;font-size:24px}
+#dashboard,#editor,#control,#profile{padding:32px 34px 50px 250px;min-height:calc(100vh - 72px);position:relative;background:#f7f9fb}
+.sideNav{position:absolute;left:0;top:0;width:215px;height:100%;min-height:calc(100vh - 72px);padding:28px 18px;background:#07131d;color:#fff;z-index:20}
+.sideNav .sideBrand{font-size:20px;font-weight:900;margin:10px 8px 28px}
+.sideNav button{display:block;width:100%;border:0;background:transparent;color:#fff;text-align:left;padding:13px 10px;margin:6px 0;border-radius:8px;font-weight:800;cursor:pointer}
+.sideNav button:hover,.sideNav button.active{background:#13283a;color:#fff}
+.sideNav .sideLogout{margin-top:18px;color:#ff4b5f}
+#dashboard>.row,#dashboard>#quizGrid,#editor>*,#control>*,#profile>*{position:relative;z-index:2}#quizGrid{grid-template-columns:repeat(3,1fr)}.quizcard{min-height:155px;border-radius:10px}.quizcard:before{content:"◉";display:grid;place-items:center;width:45px;height:45px;border-radius:9px;background:#167dff;color:#fff;font-size:24px}
 #editor.card{max-width:none;margin:0;border:0;border-radius:0;box-shadow:none}#editor>*,#control>*{position:relative;z-index:1}
 #control .card{border-radius:10px}.viewer{background:linear-gradient(#06142d,#07182f);border:1px solid #173b70;min-height:560px}.viewer .question{font-size:42px}
 #viewer #qr{display:flex;justify-content:center;margin:20px}#viewer #qr img{background:#fff;padding:12px}
 #player{min-height:100vh;background:linear-gradient(#06142d,#07182f);padding:20px}#player>.card{max-width:1100px;margin:auto;background:#08172a;color:#fff;border-color:#17365c}#player .muted{color:#9fb0c8}
 #playerView.viewer{border:0}.timer{display:inline-block;background:#168eea;border-radius:22px;padding:8px 22px;font-size:24px}.opt{background:#101f30;border-color:#26394e;text-align:left}.correct{background:#00a94f!important}.wrong{background:#d72c3b!important}
 #controlCode{color:#167dff}.podium{color:#fff}
-@media(max-width:800px){.top{padding:0 18px}#home{padding:50px 24px}#home h1{font-size:45px}#dashboard,#editor,#control{padding:24px 14px}#dashboard:before,#editor:before,#control:before{display:none}#quizGrid{grid-template-columns:1fr}.viewer .question{font-size:28px}}
-
+@media(max-width:800px){.top{padding:0 18px}#home{padding:50px 24px}#home h1{font-size:45px}#dashboard,#editor,#control,#profile{padding:24px 14px}#quizGrid{grid-template-columns:1fr}.viewer .question{font-size:28px}.sideNav{display:none}}
+</style>
 <style id="live-presentation-ui">
 #control.live-presentation{position:fixed!important;inset:0!important;z-index:9999!important;padding:0!important;background:#06142d!important;min-height:100vh!important}
-#control.live-presentation:before,#control.live-presentation>.row{display:none!important}
+#control.live-presentation>.sideNav,#control.live-presentation>.row{display:none!important}
 #control.live-presentation>.card{position:fixed!important;inset:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#06142d!important;box-shadow:none!important}
 #control.live-presentation>.card>.row,#control.live-presentation>.card>.tools,#control.live-presentation>.card>h3,#control.live-presentation #participantList{display:none!important}
 #control.live-presentation #viewer{display:flex!important;flex-direction:column;justify-content:center;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;min-height:100vh!important;margin:0!important;border:0!important;border-radius:0!important;padding:42px 48px 105px!important;overflow:auto!important;background:linear-gradient(180deg,#06142d 0%,#071a35 100%)!important}
@@ -62,21 +66,47 @@ body{background:#f4f7fa}.shell{max-width:1536px;padding:0}.top{height:72px;paddi
 
 <section id="control" class="hide"><div class="row"><div><button id="backDash2" class="link">← My Quizzes</button><h1 id="controlTitle"></h1></div><div class="tools"><button id="editQuiz" class="btn ghost">Edit Quiz</button><button id="deleteQuiz" class="btn ghost">Delete</button></div></div><div class="card"><div class="row"><div><div class="muted">QUIZ CODE</div><div id="controlCode" class="code"></div></div><div><b id="participantCount">0</b> Participants</div></div><div class="tools"><button id="showViewer" class="btn dark">Show Viewer</button><button id="startQuiz" class="btn">Start Quiz</button><button id="prevQ" class="btn ghost hide">Previous</button><button id="showAnswer" class="btn hide">Show Answer</button><button id="showBoard" class="btn dark hide">Show Leaderboard</button><button id="nextQ" class="btn hide">Next Question</button></div><div id="viewer" class="viewer hide"></div><h3>Participants</h3><div id="participantList" class="list"></div></div></section>
 
+<section id="profile" class="hide"><div class="row"><div><h1>Host Profile</h1><p class="muted">RJ Club host account</p></div></div><div class="card" style="max-width:620px"><div class="muted">EMAIL</div><h2 id="profileEmail">—</h2><p class="muted">Your quizzes are saved securely to this host account.</p><button id="profileBack" class="btn ghost">Back to Dashboard</button></div></section>
+
 <section id="player" class="hide"><div class="card"><div class="row"><div><b id="playerName"></b><div id="playerDept" class="muted"></div></div><div><span class="muted">POINTS</span> <b id="playerScore">0</b></div></div><div id="playerView" class="viewer"></div></div></section>
 </main><script>
 const $=x=>document.getElementById(x),sb=supabase.createClient(RJ_SUPABASE_URL,RJ_SUPABASE_KEY,{auth:{flowType:'implicit',detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
 let user=null,quiz=null,questions=[],participants=[],me=null,myAnswer=null,channel=null,tickTimer=null,editing=null,answerCounts=[0,0,0,0],phaseChanging=false,lastPlayerQuestionId=null;
-const screens=['home','login','register','dashboard','editor','control','player'];
+const screens=['home','login','register','dashboard','editor','control','profile','player'];
 function view(v){screens.forEach(x=>$(x).classList.toggle('hide',x!==v))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function mountSideNav(screen,active){
+  let root=$(screen);if(!root)return;
+  let old=root.querySelector('.sideNav');if(old)old.remove();
+  let nav=document.createElement('aside');nav.className='sideNav';
+  nav.innerHTML='<div class="sideBrand">RJ Club</div>'+
+    '<button data-side="dashboard">▣ &nbsp; Dashboard</button>'+
+    '<button data-side="create">✎ &nbsp; Create New Quiz</button>'+
+    '<button data-side="quizzes">▤ &nbsp; My Quizzes</button>'+
+    '<button data-side="profile">♙ &nbsp; Profile</button>'+
+    '<button data-side="logout" class="sideLogout">↪ &nbsp; Logout</button>';
+  let activeBtn=nav.querySelector('[data-side="'+active+'"]');if(activeBtn)activeBtn.classList.add('active');
+  nav.onclick=async e=>{
+    let b=e.target.closest('button[data-side]');if(!b)return;
+    let a=b.dataset.side;
+    if(a==='dashboard'||a==='quizzes')await loadDashboard();
+    else if(a==='create')openEditor(null);
+    else if(a==='profile')openProfile();
+    else if(a==='logout')await doLogout();
+  };
+  root.prepend(nav);
+}
+async function doLogout(){if(channel){sb.removeChannel(channel);channel=null}await sb.auth.signOut();user=null;quiz=null;me=null;$('logout').classList.add('hide');$('hostNav').classList.remove('hide');view('home')}
+function openProfile(){view('profile');mountSideNav('profile','profile');$('profileEmail').textContent=user?.email||'Host account'}
+
 $('homeBtn').onclick=()=>view('home');$('hostNav').onclick=()=>view('login');$('openRegister').onclick=()=>view('register');$('backLogin').onclick=()=>view('login');
 $('regBtn').onclick=async()=>{let btn=$('regBtn'),email=$('regEmail').value.trim(),password=$('regPass').value;if(!email||password.length<6){$('regMsg').textContent='Enter a valid email and password with at least 6 characters.';return}btn.disabled=true;btn.textContent='CREATING ACCOUNT...';let {error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://rjclub.vercel.app/confirm.html'}});if(error){$('regMsg').textContent=error.message.toLowerCase().includes('rate limit')?'Too many registration attempts. Please wait a little and try again.':error.message}else{$('regMsg').textContent='Account created. Check your email to confirm, then login.'}setTimeout(()=>{btn.disabled=false;btn.textContent='REGISTER'},30000)};
 $('loginBtn').onclick=async()=>{let {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){$('loginMsg').textContent=error.message.toLowerCase().includes('email not confirmed')?'Please confirm your email first, then login.':error.message;return}user=data.user;hostUI();await loadDashboard()};
-$('logout').onclick=async()=>{await sb.auth.signOut();user=null;$('logout').classList.add('hide');$('hostNav').classList.remove('hide');view('home')};
+$('logout').onclick=doLogout;
 function hostUI(){$('logout').classList.remove('hide');$('hostNav').classList.add('hide')}
-async function loadDashboard(){view('dashboard');let {data,error}=await sb.from('rj_quizzes').select('*').eq('host_user',user.id).order('updated_at',{ascending:false});if(error)return;$('quizGrid').innerHTML=(data||[]).map(q=>'<article class="card quizcard" onclick="openQuiz(\''+q.id+'\')"><div class="muted">'+esc(q.category||'Quiz')+'</div><h3>'+esc(q.title)+'</h3><div class="muted">Code '+esc(q.code)+' · '+esc(q.status)+'</div></article>').join('')||'<div class="card"><b>No quizzes yet.</b><p class="muted">Create your first quiz.</p></div>'}
-$('createBtn').onclick=()=>openEditor(null);$('backDash1').onclick=loadDashboard;$('backDash2').onclick=loadDashboard;
-async function openEditor(id){editing=id;view('editor');$('questionEditor').classList.toggle('hide',!id);$('editMsg').textContent='';if(!id){$('editorTitle').textContent='Create New Quiz';$('quizTitle').value='';$('quizDesc').value='';$('quizCat').value='';return}let {data}=await sb.from('rj_quizzes').select('*').eq('id',id).single();quiz=data;$('editorTitle').textContent='Edit Quiz';$('quizTitle').value=data.title;$('quizDesc').value=data.description||'';$('quizCat').value=data.category||'';$('quizTime').value=data.time_per_question||30;await loadQuestions()}
+async function loadDashboard(){view('dashboard');mountSideNav('dashboard','dashboard');let {data,error}=await sb.from('rj_quizzes').select('*').eq('host_user',user.id).order('updated_at',{ascending:false});if(error)return;$('quizGrid').innerHTML=(data||[]).map(q=>'<article class="card quizcard" onclick="openQuiz(\''+q.id+'\')"><div class="muted">'+esc(q.category||'Quiz')+'</div><h3>'+esc(q.title)+'</h3><div class="muted">Code '+esc(q.code)+' · '+esc(q.status)+'</div></article>').join('')||'<div class="card"><b>No quizzes yet.</b><p class="muted">Create your first quiz.</p></div>'}
+$('createBtn').onclick=()=>openEditor(null);$('backDash1').onclick=loadDashboard;$('backDash2').onclick=loadDashboard;$('profileBack').onclick=loadDashboard;
+async function openEditor(id){editing=id;view('editor');mountSideNav('editor',id?'quizzes':'create');$('questionEditor').classList.toggle('hide',!id);$('editMsg').textContent='';if(!id){$('editorTitle').textContent='Create New Quiz';$('quizTitle').value='';$('quizDesc').value='';$('quizCat').value='';return}let {data}=await sb.from('rj_quizzes').select('*').eq('id',id).single();quiz=data;$('editorTitle').textContent='Edit Quiz';$('quizTitle').value=data.title;$('quizDesc').value=data.description||'';$('quizCat').value=data.category||'';$('quizTime').value=data.time_per_question||30;await loadQuestions()}
 $('saveMeta').onclick=async()=>{let title=$('quizTitle').value.trim();if(!title)return $('editMsg').textContent='Enter a quiz title.';if(!editing){let code=String(Math.floor(100000+Math.random()*900000));let {data,error}=await sb.from('rj_quizzes').insert({title,code,host_user:user.id,description:$('quizDesc').value.trim(),category:$('quizCat').value.trim(),time_per_question:+$('quizTime').value,status:'draft',phase:'waiting'}).select().single();if(error)return $('editMsg').textContent=error.message;editing=data.id;quiz=data;$('questionEditor').classList.remove('hide');$('editorTitle').textContent='Edit Quiz'}else{let {error}=await sb.from('rj_quizzes').update({title,description:$('quizDesc').value.trim(),category:$('quizCat').value.trim(),time_per_question:+$('quizTime').value,updated_at:new Date().toISOString()}).eq('id',editing);if(error)return $('editMsg').textContent=error.message}$('editMsg').textContent='Quiz saved.'};
 async function loadQuestions(){let {data}=await sb.from('rj_questions').select('*').eq('quiz_id',editing).order('position');questions=data||[];$('qCount').textContent=questions.length;$('qList').innerHTML=questions.map((q,i)=>'<div><b>'+(i+1)+'. '+esc(q.question)+'</b></div>').join('')}
 
@@ -157,7 +187,7 @@ $('quizDoc').onchange=async e=>{
   e.target.value='';
 };
 $('addQ').onclick=async()=>{let o=[$('oa').value,$('ob').value,$('oc').value,$('od').value],text=$('qText').value.trim();if(!text||o.some(x=>!x.trim()))return $('editMsg').textContent='Complete the question and all 4 options.';let {error}=await sb.from('rj_questions').insert({quiz_id:editing,position:questions.length,question:text,options:o,correct_index:+$('correct').value});if(error)return $('editMsg').textContent=error.message;['qText','oa','ob','oc','od'].forEach(x=>$(x).value='');await loadQuestions()};
-window.openQuiz=async id=>{let {data}=await sb.from('rj_quizzes').select('*').eq('id',id).eq('host_user',user.id).single();quiz=data;view('control');$('controlTitle').textContent=quiz.title;$('controlCode').textContent=quiz.code;await refreshLive();subscribe();};
+window.openQuiz=async id=>{let {data}=await sb.from('rj_quizzes').select('*').eq('id',id).eq('host_user',user.id).single();quiz=data;view('control');mountSideNav('control','quizzes');$('controlTitle').textContent=quiz.title;$('controlCode').textContent=quiz.code;await refreshLive();subscribe();};
 $('editQuiz').onclick=()=>openEditor(quiz.id);
 $('deleteQuiz').onclick=async()=>{if(!confirm('Delete this quiz permanently?'))return;await sb.from('rj_quizzes').delete().eq('id',quiz.id).eq('host_user',user.id);await loadDashboard()};
 async function refreshLive(){if(!quiz)return;let q=await sb.from('rj_quizzes').select('*').eq('id',quiz.id).single();if(q.data)quiz=q.data;let a=await sb.from('rj_questions').select('*').eq('quiz_id',quiz.id).order('position');questions=a.data||[];let p=await sb.from('rj_participants').select('*').eq('quiz_id',quiz.id).order('score',{ascending:false});participants=p.data||[];
