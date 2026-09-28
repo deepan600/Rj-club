@@ -4,7 +4,7 @@
 <meta name="description" content="RJ Club AEC official realtime quiz challenge website.">
 <meta name="robots" content="index,follow"><link rel="canonical" href="https://rjclub.vercel.app/">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><script src="supabase-config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script src="supabase-config.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f6f8;color:#121722;font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}.hide{display:none!important}.shell{max-width:1180px;margin:auto;padding:22px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.logo{font-size:24px;font-weight:900}.logo b{color:#e92332}.sub{font-size:11px;letter-spacing:1.5px;color:#727987}.card{background:#fff;border:1px solid #e0e3e8;border-radius:14px;padding:24px;box-shadow:0 8px 28px #1118270b}.auth{max-width:450px;margin:7vh auto}.field{width:100%;border:1px solid #cdd2da;border-radius:9px;padding:13px;background:#fff;margin:6px 0 12px}.btn{border:0;border-radius:9px;padding:12px 17px;background:#ed2434;color:white;font-weight:800;cursor:pointer}.btn.dark{background:#151c29}.btn.ghost{background:white;color:#172033;border:1px solid #ccd2dc}.btn:disabled{opacity:.45;cursor:not-allowed}.link{border:0;background:none;color:#e92332;font-weight:800;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.quizcard{cursor:pointer;transition:.15s}.quizcard:hover{transform:translateY(-2px);border-color:#e92332}.quizcard h3{margin:9px 0}.muted{color:#747d8d}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.tools{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}.opts{display:grid;grid-template-columns:1fr 1fr;gap:11px}.opt{border:1px solid #364152;border-radius:10px;padding:15px;background:#151e2d;color:white;font-weight:750}.selected{outline:2px solid #45a2ff}.correct{background:#11844d!important}.wrong{background:#a92935!important}.viewer{background:#0d1523;color:white;border-radius:15px;padding:36px;min-height:430px;text-align:center}.viewer .question{font-size:38px;font-weight:900;margin:55px auto 35px;max-width:900px}.timer{font-size:50px;font-weight:900}.code{font-size:34px;font-weight:900;letter-spacing:7px}.list>div{padding:11px;border-bottom:1px solid #e8ebef}.podium{display:flex;justify-content:center;align-items:end;gap:12px;margin:25px 0}.pod{width:130px;padding:18px 8px;border-radius:12px 12px 4px 4px;background:#1d2a3c}.pod.first{min-height:150px;background:#7c5c08}.nav{display:flex;gap:8px}.qedit{border-top:1px solid #eee;padding-top:18px;margin-top:18px}@media(max-width:760px){.grid{grid-template-columns:1fr}.opts{grid-template-columns:1fr}.shell{padding:13px}.viewer{padding:20px}.viewer .question{font-size:27px}.top{align-items:flex-start}}
 </style>
@@ -49,7 +49,16 @@ body{background:#f4f7fa}.shell{max-width:1536px;padding:0}.top{height:72px;paddi
 
 <section id="dashboard" class="hide"><div class="row"><div><h1>Welcome Back 👋</h1><p class="muted">Manage and create your quizzes</p><h2>My Quizzes</h2></div><button id="createBtn" class="btn">+ Create New Quiz</button></div><div id="quizGrid" class="grid"></div></section>
 
-<section id="editor" class="card hide"><div class="row"><h1 id="editorTitle">Create New Quiz</h1><p class="muted">Add questions and settings for your quiz</p><button id="backDash1" class="btn ghost">Back</button></div><label>Quiz Title</label><input id="quizTitle" class="field"><label>Description</label><textarea id="quizDesc" class="field"></textarea><div class="opts"><div><label>Category</label><input id="quizCat" class="field"></div><div><label>Answer Time</label><select id="quizTime" class="field"><option value="20">20 seconds</option><option value="30" selected>30 seconds</option><option value="45">45 seconds</option></select></div></div><button id="saveMeta" class="btn">Save Quiz</button><div id="questionEditor" class="qedit hide"><h2>Add Questions</h2><p class="muted">Create questions for your quiz</p><textarea id="qText" class="field" placeholder="Question"></textarea><div class="opts"><input id="oa" class="field" placeholder="Option A"><input id="ob" class="field" placeholder="Option B"><input id="oc" class="field" placeholder="Option C"><input id="od" class="field" placeholder="Option D"></div><select id="correct" class="field"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><button id="addQ" class="btn">+ Add Question</button><h3>Questions (<span id="qCount">0</span>)</h3><div id="qList" class="list"></div></div><p id="editMsg" class="muted"></p></section>
+<section id="editor" class="card hide"><div class="row"><h1 id="editorTitle">Create New Quiz</h1><p class="muted">Add questions and settings for your quiz</p><button id="backDash1" class="btn ghost">Back</button></div><label>Quiz Title</label><input id="quizTitle" class="field"><label>Description</label><textarea id="quizDesc" class="field"></textarea><div class="opts"><div><label>Category</label><input id="quizCat" class="field"></div><div><label>Answer Time</label><select id="quizTime" class="field"><option value="20">20 seconds</option><option value="30" selected>30 seconds</option><option value="45">45 seconds</option></select></div></div><button id="saveMeta" class="btn">Save Quiz</button><div id="questionEditor" class="qedit hide"><h2>Add Questions</h2><p class="muted">Create questions for your quiz</p>
+<div class="card" style="margin:14px 0;background:#f8fbff;border-style:dashed">
+  <div class="row" style="align-items:flex-start;flex-wrap:wrap">
+    <div><b>Upload Quiz Document</b><p class="muted" style="margin:5px 0">PDF, DOCX, XLSX, XLS, CSV or TXT</p></div>
+    <label class="btn dark" for="quizDoc" style="cursor:pointer">Choose Document</label>
+  </div>
+  <input id="quizDoc" type="file" accept=".pdf,.docx,.xlsx,.xls,.csv,.txt" class="hide">
+  <p class="muted" style="margin:10px 0 0">Format: Question, A, B, C, D, Correct Answer. For PDF/Word/TXT use A., B., C., D. and Answer: B.</p>
+  <p id="uploadMsg" class="muted" style="margin-bottom:0"></p>
+</div><textarea id="qText" class="field" placeholder="Question"></textarea><div class="opts"><input id="oa" class="field" placeholder="Option A"><input id="ob" class="field" placeholder="Option B"><input id="oc" class="field" placeholder="Option C"><input id="od" class="field" placeholder="Option D"></div><select id="correct" class="field"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><button id="addQ" class="btn">+ Add Question</button><h3>Questions (<span id="qCount">0</span>)</h3><div id="qList" class="list"></div></div><p id="editMsg" class="muted"></p></section>
 
 <section id="control" class="hide"><div class="row"><div><button id="backDash2" class="link">← My Quizzes</button><h1 id="controlTitle"></h1></div><div class="tools"><button id="editQuiz" class="btn ghost">Edit Quiz</button><button id="deleteQuiz" class="btn ghost">Delete</button></div></div><div class="card"><div class="row"><div><div class="muted">QUIZ CODE</div><div id="controlCode" class="code"></div></div><div><b id="participantCount">0</b> Participants</div></div><div class="tools"><button id="showViewer" class="btn dark">Show Viewer</button><button id="startQuiz" class="btn">Start Quiz</button><button id="prevQ" class="btn ghost hide">Previous</button><button id="showAnswer" class="btn hide">Show Answer</button><button id="showBoard" class="btn dark hide">Show Leaderboard</button><button id="nextQ" class="btn hide">Next Question</button></div><div id="viewer" class="viewer hide"></div><h3>Participants</h3><div id="participantList" class="list"></div></div></section>
 
@@ -70,6 +79,83 @@ $('createBtn').onclick=()=>openEditor(null);$('backDash1').onclick=loadDashboard
 async function openEditor(id){editing=id;view('editor');$('questionEditor').classList.toggle('hide',!id);$('editMsg').textContent='';if(!id){$('editorTitle').textContent='Create New Quiz';$('quizTitle').value='';$('quizDesc').value='';$('quizCat').value='';return}let {data}=await sb.from('rj_quizzes').select('*').eq('id',id).single();quiz=data;$('editorTitle').textContent='Edit Quiz';$('quizTitle').value=data.title;$('quizDesc').value=data.description||'';$('quizCat').value=data.category||'';$('quizTime').value=data.time_per_question||30;await loadQuestions()}
 $('saveMeta').onclick=async()=>{let title=$('quizTitle').value.trim();if(!title)return $('editMsg').textContent='Enter a quiz title.';if(!editing){let code=String(Math.floor(100000+Math.random()*900000));let {data,error}=await sb.from('rj_quizzes').insert({title,code,host_user:user.id,description:$('quizDesc').value.trim(),category:$('quizCat').value.trim(),time_per_question:+$('quizTime').value,status:'draft',phase:'waiting'}).select().single();if(error)return $('editMsg').textContent=error.message;editing=data.id;quiz=data;$('questionEditor').classList.remove('hide');$('editorTitle').textContent='Edit Quiz'}else{let {error}=await sb.from('rj_quizzes').update({title,description:$('quizDesc').value.trim(),category:$('quizCat').value.trim(),time_per_question:+$('quizTime').value,updated_at:new Date().toISOString()}).eq('id',editing);if(error)return $('editMsg').textContent=error.message}$('editMsg').textContent='Quiz saved.'};
 async function loadQuestions(){let {data}=await sb.from('rj_questions').select('*').eq('quiz_id',editing).order('position');questions=data||[];$('qCount').textContent=questions.length;$('qList').innerHTML=questions.map((q,i)=>'<div><b>'+(i+1)+'. '+esc(q.question)+'</b></div>').join('')}
+
+function answerIndex(v,opts){
+  let s=String(v??'').trim();
+  if(!s)return -1;
+  let m=s.match(/^[A-Da-d]$/);if(m)return s.toUpperCase().charCodeAt(0)-65;
+  if(/^[1-4]$/.test(s))return Number(s)-1;
+  let low=s.toLowerCase(),idx=opts.findIndex(x=>String(x).trim().toLowerCase()===low);
+  return idx;
+}
+function rowsToQuiz(rows){
+  let out=[];
+  for(const raw of rows){
+    let map={};Object.keys(raw||{}).forEach(k=>map[String(k).trim().toLowerCase().replace(/[_-]+/g,' ')]=raw[k]);
+    let q=map['question']??map['question text']??map['questions']??'';
+    let opts=[
+      map['a']??map['option a']??map['answer a']??'',
+      map['b']??map['option b']??map['answer b']??'',
+      map['c']??map['option c']??map['answer c']??'',
+      map['d']??map['option d']??map['answer d']??''
+    ].map(x=>String(x??'').trim());
+    let ans=map['correct answer']??map['correct']??map['answer']??map['correct option']??'';
+    let ci=answerIndex(ans,opts);
+    if(String(q).trim()&&opts.every(Boolean)&&ci>=0)out.push({question:String(q).trim(),options:opts,correct_index:ci});
+  }
+  return out;
+}
+function textToQuiz(text){
+  text=String(text||'').replace(/\r/g,'\n').replace(/\n{3,}/g,'\n\n');
+  let lines=text.split('\n').map(x=>x.trim()).filter(Boolean),out=[],cur=null;
+  const push=()=>{if(cur&&cur.question&&cur.options.every(Boolean)&&cur.correct_index>=0)out.push(cur);cur=null};
+  for(let line of lines){
+    let qm=line.match(/^(?:question\s*\d*\s*[:.)-]?|\d+\s*[.)-])\s*(.+)$/i);
+    let om=line.match(/^([A-D])\s*[.):\-]\s*(.+)$/i);
+    let am=line.match(/^(?:correct\s*answer|correct\s*option|answer)\s*[:\-]\s*([A-D1-4])\b/i);
+    if(qm){push();cur={question:qm[1].trim(),options:['','','',''],correct_index:-1};continue}
+    if(om){if(!cur)cur={question:'',options:['','','',''],correct_index:-1};cur.options[om[1].toUpperCase().charCodeAt(0)-65]=om[2].trim();continue}
+    if(am){if(cur)cur.correct_index=answerIndex(am[1],cur.options);continue}
+    if(cur&&!cur.question)cur.question=line;
+  }
+  push();return out;
+}
+async function extractPdf(buf){
+  if(window.pdfjsLib?.GlobalWorkerOptions)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  let pdf=await pdfjsLib.getDocument({data:new Uint8Array(buf)}).promise,pages=[];
+  for(let n=1;n<=pdf.numPages;n++){
+    let page=await pdf.getPage(n),tc=await page.getTextContent(),s='';
+    tc.items.forEach(it=>{s+=it.str+(it.hasEOL?'\n':' ')});
+    pages.push(s);
+  }
+  return pages.join('\n');
+}
+async function importQuizDocument(file){
+  let ext=(file.name.split('.').pop()||'').toLowerCase(),items=[];
+  if(['xlsx','xls','csv'].includes(ext)){
+    let wb=XLSX.read(await file.arrayBuffer(),{type:'array'}),rows=[];
+    wb.SheetNames.forEach(name=>rows.push(...XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:''})));
+    items=rowsToQuiz(rows);
+  }else if(ext==='docx'){
+    let result=await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});items=textToQuiz(result.value);
+  }else if(ext==='pdf'){
+    items=textToQuiz(await extractPdf(await file.arrayBuffer()));
+  }else if(ext==='txt'){
+    items=textToQuiz(await file.text());
+  }else throw new Error('Unsupported document type.');
+  if(!items.length)throw new Error('No valid questions found. Check the document format.');
+  let rows=items.map((x,i)=>({quiz_id:editing,position:questions.length+i,question:x.question,options:x.options,correct_index:x.correct_index}));
+  let {error}=await sb.from('rj_questions').insert(rows);if(error)throw error;
+  await loadQuestions();return items.length;
+}
+$('quizDoc').onchange=async e=>{
+  let file=e.target.files?.[0];if(!file)return;
+  if(!editing){$('uploadMsg').textContent='Save the quiz first, then upload the document.';e.target.value='';return}
+  $('uploadMsg').textContent='Reading '+file.name+'...';
+  try{let n=await importQuizDocument(file);$('uploadMsg').textContent=n+' questions imported successfully.'}
+  catch(err){$('uploadMsg').textContent=err.message||'Could not import this document.'}
+  e.target.value='';
+};
 $('addQ').onclick=async()=>{let o=[$('oa').value,$('ob').value,$('oc').value,$('od').value],text=$('qText').value.trim();if(!text||o.some(x=>!x.trim()))return $('editMsg').textContent='Complete the question and all 4 options.';let {error}=await sb.from('rj_questions').insert({quiz_id:editing,position:questions.length,question:text,options:o,correct_index:+$('correct').value});if(error)return $('editMsg').textContent=error.message;['qText','oa','ob','oc','od'].forEach(x=>$(x).value='');await loadQuestions()};
 window.openQuiz=async id=>{let {data}=await sb.from('rj_quizzes').select('*').eq('id',id).eq('host_user',user.id).single();quiz=data;view('control');$('controlTitle').textContent=quiz.title;$('controlCode').textContent=quiz.code;await refreshLive();subscribe();};
 $('editQuiz').onclick=()=>openEditor(quiz.id);
