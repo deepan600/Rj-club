@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confirm Email | RJ Club</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f7fb;color:#111827;min-height:100vh}.top{height:96px;background:#061923;color:#fff;display:flex;align-items:center;padding:0 6%;border-bottom:1px solid #173746}.brand{font-weight:900;font-size:30px;letter-spacing:1px}.brand span{color:#f32335}.sub{font-size:13px;letter-spacing:4px;color:#cbd5e1;font-weight:800}.wrap{min-height:calc(100vh - 96px);display:grid;place-items:center;padding:28px 18px}.card{width:min(520px,100%);background:#fff;border:1px solid #e5e7eb;border-radius:24px;padding:38px 28px;text-align:center;box-shadow:0 16px 45px rgba(15,23,42,.08)}.icon{width:76px;height:76px;border-radius:50%;margin:0 auto 22px;background:#fff1f2;display:grid;place-items:center;font-size:36px}.logo{font-size:30px;font-weight:900;margin-bottom:26px}.logo span{color:#f32335}h1{font-size:30px;margin:0 0 12px}p{color:#64748b;line-height:1.55;margin:0 auto 26px;max-width:390px}.btn{width:100%;border:0;border-radius:13px;padding:17px 18px;background:#f32335;color:white;font-size:17px;font-weight:900;cursor:pointer}.btn:disabled{opacity:.55;cursor:not-allowed}.msg{margin-top:18px;min-height:24px;font-weight:700;color:#64748b}.ok{color:#15803d}.bad{color:#b91c1c}.login{display:none;margin-top:14px;text-decoration:none;color:#f32335;font-weight:800}
+</style>
+</head>
+<body>
+<header class="top"><div><div class="brand">RJ <span>CLUB</span></div><div class="sub">QUIZ CHALLENGE</div></div></header>
+<main class="wrap"><section class="card">
+<div class="icon">✉️</div>
+<div class="logo">RJ <span>CLUB</span></div>
+<h1>Confirm Your Email</h1>
+<p>You're almost ready. Tap the button below to verify your email address and activate your RJ Club host account.</p>
+<button class="btn" id="confirmBtn">CONFIRM MY EMAIL</button>
+<div class="msg" id="msg"></div>
+<a class="login" id="loginLink" href="/?host=login">CONTINUE TO HOST LOGIN</a>
+</section></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-config.js"></script>
+<script>
+const btn=document.getElementById('confirmBtn'),msg=document.getElementById('msg'),login=document.getElementById('loginLink');
+const params=new URLSearchParams(location.search),tokenHash=params.get('token_hash'),type=params.get('type')||'email';
+const client=window.supabase.createClient(window.RJ_SUPABASE_URL,window.RJ_SUPABASE_KEY);
+if(!tokenHash){btn.disabled=true;msg.textContent='This confirmation link is invalid or incomplete.';msg.className='msg bad'}
+btn.onclick=async()=>{if(!tokenHash)return;btn.disabled=true;btn.textContent='CONFIRMING...';msg.textContent='Please wait while we verify your email.';msg.className='msg';
+const {error}=await client.auth.verifyOtp({token_hash:tokenHash,type:type});
+if(error){msg.textContent='This confirmation link is invalid or has expired. Please request a new confirmation email.';msg.className='msg bad';btn.textContent='LINK EXPIRED';return}
+msg.textContent='Email confirmed successfully! Your host account is ready.';msg.className='msg ok';btn.textContent='EMAIL CONFIRMED ✓';login.style.display='inline-block';
+setTimeout(()=>location.href='/?host=login',1800)};
+</script>
+</body></html>
